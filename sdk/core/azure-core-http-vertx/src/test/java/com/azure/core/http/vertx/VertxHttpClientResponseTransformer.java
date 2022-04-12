@@ -9,10 +9,10 @@ import com.github.tomakehurst.wiremock.extension.ResponseTransformer;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.Response;
 
-import static com.azure.core.http.vertx.VertxHttpClientTests.RETURN_HEADERS_AS_IS_PATH;
+import static com.azure.core.http.vertx.VertxAsyncHttpClientTests.RETURN_HEADERS_AS_IS_PATH;
 
 /**
- * Mock response transformer used to test {@link VertxHttpClient}.
+ * Mock response transformer used to test {@link VertxAsyncHttpClient}.
  */
 public class VertxHttpClientResponseTransformer extends ResponseTransformer {
     public static final String NAME = "vertx-http-client-response-transformer";

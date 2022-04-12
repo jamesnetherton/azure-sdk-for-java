@@ -17,13 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
- * Tests {@link VertxHttpClientProvider}.
+ * Tests {@link VertxAsyncHttpClientProvider}.
  */
-public class VertxHttpClientProviderTests {
+public class VertxAsyncHttpClientProviderTests {
 
     @Test
     public void nullOptionsReturnsBaseClient() {
-        VertxHttpClient httpClient = (VertxHttpClient) new VertxHttpClientProvider()
+        VertxAsyncHttpClient httpClient = (VertxAsyncHttpClient) new VertxAsyncHttpClientProvider()
             .createInstance(null);
 
         ProxyOptions environmentProxy = ProxyOptions.fromConfiguration(Configuration.getGlobalConfiguration());
@@ -39,7 +39,7 @@ public class VertxHttpClientProviderTests {
 
     @Test
     public void defaultOptionsReturnsBaseClient() {
-        VertxHttpClient httpClient = (VertxHttpClient) new VertxHttpClientProvider()
+        VertxAsyncHttpClient httpClient = (VertxAsyncHttpClient) new VertxAsyncHttpClientProvider()
             .createInstance(new HttpClientOptions());
 
         ProxyOptions environmentProxy = ProxyOptions.fromConfiguration(Configuration.getGlobalConfiguration());
@@ -60,7 +60,7 @@ public class VertxHttpClientProviderTests {
 
         HttpClientOptions clientOptions = new HttpClientOptions().setProxyOptions(proxyOptions);
 
-        VertxHttpClient httpClient = (VertxHttpClient) new VertxHttpClientProvider()
+        VertxAsyncHttpClient httpClient = (VertxAsyncHttpClient) new VertxAsyncHttpClientProvider()
             .createInstance(clientOptions);
 
         WebClientOptions options = httpClient.getWebClientOptions();
@@ -80,7 +80,7 @@ public class VertxHttpClientProviderTests {
             .setResponseTimeout(timeout)
             .setReadTimeout(timeout);
 
-        VertxHttpClient httpClient = (VertxHttpClient) new VertxHttpClientProvider()
+        VertxAsyncHttpClient httpClient = (VertxAsyncHttpClient) new VertxAsyncHttpClientProvider()
             .createInstance(clientOptions);
 
         WebClientOptions options = httpClient.getWebClientOptions();

@@ -26,11 +26,11 @@ import static com.azure.core.util.Configuration.PROPERTY_AZURE_REQUEST_WRITE_TIM
 import static com.azure.core.util.CoreUtils.getDefaultTimeoutFromEnvironment;
 
 /**
- * Builds a {@link VertxHttpClient}.
+ * Builds a {@link VertxAsyncHttpClient}.
  */
-public class VertxHttpClientBuilder {
+public class VertxAsyncHttpClientBuilder {
 
-    private static final ClientLogger LOGGER = new ClientLogger(VertxHttpClientBuilder.class);
+    private static final ClientLogger LOGGER = new ClientLogger(VertxAsyncHttpClientBuilder.class);
     private static final Pattern NON_PROXY_HOSTS_SPLIT = Pattern.compile("(?<!\\\\)\\|");
     private static final Pattern NON_PROXY_HOST_DESANITIZE = Pattern.compile("(\\?|\\\\|\\(|\\)|\\\\E|\\\\Q|\\.\\.)");
     private static final Pattern NON_PROXY_HOST_DOT_STAR = Pattern.compile("(\\.\\*)");
@@ -65,7 +65,7 @@ public class VertxHttpClientBuilder {
      * @param readIdleTimeout the read idle timeout
      * @return the updated VertxAsyncHttpClientBuilder object
      */
-    public VertxHttpClientBuilder readIdleTimeout(Duration readIdleTimeout) {
+    public VertxAsyncHttpClientBuilder readIdleTimeout(Duration readIdleTimeout) {
         this.readIdleTimeout = readIdleTimeout;
         return this;
     }
@@ -78,7 +78,7 @@ public class VertxHttpClientBuilder {
      * @param writeIdleTimeout the write idle timeout
      * @return the updated VertxAsyncHttpClientBuilder object
      */
-    public VertxHttpClientBuilder writeIdleTimeout(Duration writeIdleTimeout) {
+    public VertxAsyncHttpClientBuilder writeIdleTimeout(Duration writeIdleTimeout) {
         this.writeIdleTimeout = writeIdleTimeout;
         return this;
     }
@@ -91,7 +91,7 @@ public class VertxHttpClientBuilder {
      * @param connectTimeout the connection timeout
      * @return the updated VertxAsyncHttpClientBuilder object
      */
-    public VertxHttpClientBuilder connectTimeout(Duration connectTimeout) {
+    public VertxAsyncHttpClientBuilder connectTimeout(Duration connectTimeout) {
         this.connectTimeout = connectTimeout;
         return this;
     }
@@ -104,7 +104,7 @@ public class VertxHttpClientBuilder {
      * @param idleTimeout the connection idle timeout
      * @return the updated VertxAsyncHttpClientBuilder object
      */
-    public VertxHttpClientBuilder idleTimeout(Duration idleTimeout) {
+    public VertxAsyncHttpClientBuilder idleTimeout(Duration idleTimeout) {
         this.idleTimeout = idleTimeout;
         return this;
     }
@@ -115,7 +115,7 @@ public class VertxHttpClientBuilder {
      * @param proxyOptions The proxy configuration to use.
      * @return The updated VertxAsyncHttpClientBuilder object.
      */
-    public VertxHttpClientBuilder proxy(ProxyOptions proxyOptions) {
+    public VertxAsyncHttpClientBuilder proxy(ProxyOptions proxyOptions) {
         this.proxyOptions = proxyOptions;
         return this;
     }
@@ -129,7 +129,7 @@ public class VertxHttpClientBuilder {
      * @param configuration The configuration store.
      * @return The updated VertxAsyncHttpClientBuilder object.
      */
-    public VertxHttpClientBuilder configuration(Configuration configuration) {
+    public VertxAsyncHttpClientBuilder configuration(Configuration configuration) {
         this.configuration = configuration;
         return this;
     }
@@ -140,7 +140,7 @@ public class VertxHttpClientBuilder {
      * @param webClientOptions The options of the web client.
      * @return The updated VertxAsyncHttpClientBuilder object
      */
-    public VertxHttpClientBuilder webClientOptions(WebClientOptions webClientOptions) {
+    public VertxAsyncHttpClientBuilder webClientOptions(WebClientOptions webClientOptions) {
         this.webClientOptions = webClientOptions;
         return this;
     }
@@ -151,7 +151,7 @@ public class VertxHttpClientBuilder {
      * @param vertx The vertx instance.
      * @return The updated VertxAsyncHttpClientBuilder object
      */
-    public VertxHttpClientBuilder vertx(Vertx vertx) {
+    public VertxAsyncHttpClientBuilder vertx(Vertx vertx) {
         this.vertx = vertx;
         return this;
     }
@@ -251,7 +251,7 @@ public class VertxHttpClientBuilder {
         }
 
         WebClient client = WebClient.create(this.vertx, this.webClientOptions);
-        return new VertxHttpClient(client, this.webClientOptions);
+        return new VertxAsyncHttpClient(client, this.webClientOptions);
     }
 
     /**

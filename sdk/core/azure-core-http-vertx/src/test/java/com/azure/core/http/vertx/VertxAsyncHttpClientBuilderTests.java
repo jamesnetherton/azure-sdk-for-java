@@ -29,9 +29,9 @@ import java.util.concurrent.CountDownLatch;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Tests {@link VertxHttpClientBuilder}.
+ * Tests {@link VertxAsyncHttpClientBuilder}.
  */
-public class VertxHttpClientBuilderTests {
+public class VertxAsyncHttpClientBuilderTests {
     private static final String COOKIE_VALIDATOR_PATH = "/cookieValidator";
     private static final String DEFAULT_PATH = "/default";
     private static final String DISPATCHER_PATH = "/dispatcher";
@@ -76,7 +76,7 @@ public class VertxHttpClientBuilderTests {
 
     @Test
     public void buildWithConfigurationNone() {
-        HttpClient client = new VertxHttpClientBuilder()
+        HttpClient client = new VertxAsyncHttpClientBuilder()
             .configuration(Configuration.NONE)
             .vertx(vertx)
             .build();
@@ -85,7 +85,7 @@ public class VertxHttpClientBuilderTests {
                 .assertNext(response -> assertEquals(200, response.getStatusCode()))
                 .verifyComplete();
         } finally {
-            ((VertxHttpClient) client).close();
+            ((VertxAsyncHttpClient) client).close();
         }
     }
 
@@ -93,7 +93,7 @@ public class VertxHttpClientBuilderTests {
     public void buildWithDefaultConnectionOptions() {
         WebClientOptions options = new WebClientOptions();
 
-        HttpClient client = new VertxHttpClientBuilder()
+        HttpClient client = new VertxAsyncHttpClientBuilder()
             .vertx(vertx)
             .webClientOptions(options)
             .build();
@@ -108,7 +108,7 @@ public class VertxHttpClientBuilderTests {
             assertEquals(options.getReadIdleTimeout(), 60);
             assertEquals(options.getWriteIdleTimeout(), 60);
         } finally {
-            ((VertxHttpClient) client).close();
+            ((VertxAsyncHttpClient) client).close();
         }
     }
 
@@ -116,7 +116,7 @@ public class VertxHttpClientBuilderTests {
     public void buildWithConnectionOptions() {
         WebClientOptions options = new WebClientOptions();
 
-        HttpClient client = new VertxHttpClientBuilder()
+        HttpClient client = new VertxAsyncHttpClientBuilder()
             .vertx(vertx)
             .webClientOptions(options)
             .connectTimeout(Duration.ofSeconds(10))
@@ -135,7 +135,7 @@ public class VertxHttpClientBuilderTests {
             assertEquals(options.getReadIdleTimeout(), 30);
             assertEquals(options.getWriteIdleTimeout(), 40);
         } finally {
-            ((VertxHttpClient) client).close();
+            ((VertxAsyncHttpClient) client).close();
         }
     }
 
@@ -151,7 +151,7 @@ public class VertxHttpClientBuilderTests {
         proxyOptions.setCredentials("user", "secret");
         proxyOptions.setNonProxyHosts("foo.*|*bar.com|microsoft.com");
 
-        HttpClient client = new VertxHttpClientBuilder()
+        HttpClient client = new VertxAsyncHttpClientBuilder()
             .vertx(vertx)
             .webClientOptions(options)
             .proxy(proxyOptions)
@@ -171,7 +171,7 @@ public class VertxHttpClientBuilderTests {
             proxyHosts.add("microsoft.com");
             assertEquals(proxyHosts, options.getNonProxyHosts());
         } finally {
-            ((VertxHttpClient) client).close();
+            ((VertxAsyncHttpClient) client).close();
         }
     }
 }

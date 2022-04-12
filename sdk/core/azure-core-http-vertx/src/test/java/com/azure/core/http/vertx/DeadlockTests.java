@@ -52,7 +52,7 @@ public class DeadlockTests {
 
     @Test
     public void attemptToDeadlock() {
-        HttpClient httpClient = new VertxHttpClientProvider().createInstance();
+        HttpClient httpClient = new VertxAsyncHttpClientProvider().createInstance();
 
         String endpoint = server.baseUrl() + GET_ENDPOINT;
 

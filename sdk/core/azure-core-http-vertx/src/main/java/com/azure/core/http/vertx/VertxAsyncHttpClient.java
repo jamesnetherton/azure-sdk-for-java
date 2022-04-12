@@ -24,19 +24,19 @@ import java.util.Objects;
 /**
  * {@link HttpClient} implementation for the Vert.x {@link WebClient}.
  */
-public class VertxHttpClient implements HttpClient, Closeable {
+public class VertxAsyncHttpClient implements HttpClient, Closeable {
 
-    private static final ClientLogger LOGGER = new ClientLogger(VertxHttpClient.class);
+    private static final ClientLogger LOGGER = new ClientLogger(VertxAsyncHttpClient.class);
     private final WebClient client;
     private final WebClientOptions options;
 
     /**
-     * Constructs a {@link VertxHttpClient}.
+     * Constructs a {@link VertxAsyncHttpClient}.
      *
      * @param client The Vert.x {@link WebClient}
      * @param options {@link WebClientOptions}
      */
-    public VertxHttpClient(WebClient client, WebClientOptions options) {
+    public VertxAsyncHttpClient(WebClient client, WebClientOptions options) {
         Objects.requireNonNull(client, "client cannot be null");
         Objects.requireNonNull(client, "options cannot be null");
         this.client = client;
@@ -59,14 +59,14 @@ public class VertxHttpClient implements HttpClient, Closeable {
     }
 
     /**
-     * Closes the {@link VertxHttpClient} and the underlying Vert.x {@link WebClient}.
+     * Closes the {@link VertxAsyncHttpClient} and the underlying Vert.x {@link WebClient}.
      */
     public void close() {
         this.client.close();
     }
 
     /**
-     * Gets the {@link WebClientOptions} associated with this {@link VertxHttpClient}.
+     * Gets the {@link WebClientOptions} associated with this {@link VertxAsyncHttpClient}.
      *
      * @return The provided {@link WebClientOptions}
      */

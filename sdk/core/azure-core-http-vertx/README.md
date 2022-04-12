@@ -34,7 +34,7 @@ The following sections provide several code snippets covering some of the most c
 Create an OkHttp client using a connection timeout of 60 seconds and a read timeout of 120 seconds.
 
 ```java readme-sample-createBasicClient
-HttpClient client = new VertxHttpClientBuilder().build();
+HttpClient client = new VertxAsyncHttpClientBuilder().build();
 ```
 
 ### Create a Client with Proxy
@@ -42,7 +42,7 @@ HttpClient client = new VertxHttpClientBuilder().build();
 Create an OkHttp client that is using a proxy.
 
 ```java readme-sample-createProxyClient
-HttpClient client = new VertxHttpClientBuilder()
+HttpClient client = new VertxAsyncHttpClientBuilder()
     .proxy(new ProxyOptions(ProxyOptions.Type.HTTP, new InetSocketAddress("<proxy-host>", 8888)))
     .build();
 ```

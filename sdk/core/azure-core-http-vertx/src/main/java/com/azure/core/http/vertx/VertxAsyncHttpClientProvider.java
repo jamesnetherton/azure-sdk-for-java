@@ -11,7 +11,7 @@ import io.vertx.ext.web.client.WebClient;
 /**
  * {@link HttpClientProvider} backed by the Vert.x {@link WebClient}
  */
-public class VertxHttpClientProvider implements HttpClientProvider {
+public class VertxAsyncHttpClientProvider implements HttpClientProvider {
 
     @Override
     public HttpClient createInstance() {
@@ -20,7 +20,7 @@ public class VertxHttpClientProvider implements HttpClientProvider {
 
     @Override
     public HttpClient createInstance(HttpClientOptions clientOptions) {
-        VertxHttpClientBuilder builder = new VertxHttpClientBuilder();
+        VertxAsyncHttpClientBuilder builder = new VertxAsyncHttpClientBuilder();
         if (clientOptions != null) {
             builder = builder.proxy(clientOptions.getProxyOptions())
                     .configuration(clientOptions.getConfiguration())

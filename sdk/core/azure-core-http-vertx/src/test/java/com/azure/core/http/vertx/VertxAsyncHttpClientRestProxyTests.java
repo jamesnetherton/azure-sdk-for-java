@@ -4,8 +4,8 @@
 package com.azure.core.http.vertx;
 
 import com.azure.core.http.HttpClient;
-import com.azure.core.test.HttpClientTestsWireMockServer;
-import com.azure.core.test.http.HttpClientTests;
+import com.azure.core.test.RestProxyTestsWireMockServer;
+import com.azure.core.test.implementation.RestProxyTests;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.vertx.core.Vertx;
 import org.junit.jupiter.api.AfterAll;
@@ -13,13 +13,13 @@ import org.junit.jupiter.api.BeforeAll;
 
 import java.util.concurrent.CountDownLatch;
 
-public class VertxHttpClientHttpClientTests extends HttpClientTests {
+public class VertxAsyncHttpClientRestProxyTests extends RestProxyTests {
     private static WireMockServer server;
     private static Vertx vertx;
 
     @BeforeAll
     public static void beforeAll() {
-        server = HttpClientTestsWireMockServer.getHttpClientTestsServer();
+        server = RestProxyTestsWireMockServer.getRestProxyTestsServer();
         server.start();
         vertx = Vertx.vertx();
     }
@@ -29,7 +29,6 @@ public class VertxHttpClientHttpClientTests extends HttpClientTests {
         if (server != null) {
             server.shutdown();
         }
-
         if (vertx != null) {
             CountDownLatch latch = new CountDownLatch(1);
             vertx.close(x -> latch.countDown());
@@ -44,7 +43,7 @@ public class VertxHttpClientHttpClientTests extends HttpClientTests {
 
     @Override
     protected HttpClient createHttpClient() {
-        return new VertxHttpClientBuilder()
+        return new VertxAsyncHttpClientBuilder()
             .vertx(vertx)
             .build();
     }

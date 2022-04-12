@@ -18,7 +18,7 @@ public class ReadmeSamples {
      */
     public void createBasicClient() {
         // BEGIN: readme-sample-createBasicClient
-        HttpClient client = new VertxHttpClientBuilder().build();
+        HttpClient client = new VertxAsyncHttpClientBuilder().build();
         // END: readme-sample-createBasicClient
     }
 
@@ -27,7 +27,7 @@ public class ReadmeSamples {
      */
     public void createProxyClient() {
         // BEGIN: readme-sample-createProxyClient
-        HttpClient client = new VertxHttpClientBuilder()
+        HttpClient client = new VertxAsyncHttpClientBuilder()
             .proxy(new ProxyOptions(ProxyOptions.Type.HTTP, new InetSocketAddress("<proxy-host>", 8888)))
             .build();
         // END: readme-sample-createProxyClient

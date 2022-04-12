@@ -17,7 +17,7 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
 
 @Disabled("Should only be run manually when a local proxy server (e.g. Fiddler) is running")
-public class VertxHttpClientRestProxyWithHttpProxyTests extends RestProxyTests {
+public class VertxHttpClientRestProxyWithAsyncHttpProxyTests extends RestProxyTests {
     private static WireMockServer server;
     private static Vertx vertx;
 
@@ -50,7 +50,7 @@ public class VertxHttpClientRestProxyWithHttpProxyTests extends RestProxyTests {
     protected HttpClient createHttpClient() {
         ProxyOptions proxyOptions = new ProxyOptions(ProxyOptions.Type.HTTP,
                 new InetSocketAddress("localhost", 8888));
-        return new VertxHttpClientBuilder()
+        return new VertxAsyncHttpClientBuilder()
                 .vertx(vertx)
                 .proxy(proxyOptions)
                 .build();

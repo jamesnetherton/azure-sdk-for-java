@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertLinesMatch;
 
-public class VertxHttpClientTests {
+public class VertxAsyncHttpClientTests {
     static final String RETURN_HEADERS_AS_IS_PATH = "/returnHeadersAsIs";
 
     private static final String SHORT_BODY = "hi there";
@@ -127,8 +127,8 @@ public class VertxHttpClientTests {
     @Test
     public void testRequestBodyIsErrorShouldPropagateToResponse() {
         // TODO: Fix this
-        // HttpClient client = new VertxHttpClientProvider().createInstance();
-        HttpClient client = new VertxHttpClientBuilder().vertx(vertx).build();
+        // HttpClient client = new VertxAsyncHttpClientProvider().createInstance();
+        HttpClient client = new VertxAsyncHttpClientBuilder().vertx(vertx).build();
         HttpRequest request = new HttpRequest(HttpMethod.POST, url(server, "/shortPost"))
             .setHeader("Content-Length", "123")
             .setBody(Flux.error(new RuntimeException("boo")));
@@ -141,8 +141,8 @@ public class VertxHttpClientTests {
     @Test
     public void testRequestBodyEndsInErrorShouldPropagateToResponse() {
         // TODO: Fix this
-        // HttpClient client = new VertxHttpClientProvider().createInstance();
-        HttpClient client = new VertxHttpClientBuilder().vertx(vertx).build();
+        // HttpClient client = new VertxAsyncHttpClientProvider().createInstance();
+        HttpClient client = new VertxAsyncHttpClientBuilder().vertx(vertx).build();
         String contentChunk = "abcdefgh";
         int repetitions = 1000;
         HttpRequest request = new HttpRequest(HttpMethod.POST, url(server, "/shortPost"))
@@ -189,7 +189,7 @@ public class VertxHttpClientTests {
                 }).subscribeOn(Schedulers.boundedElastic()).subscribe();
                 //
                 latch.await();
-                HttpClient client = new VertxHttpClientBuilder().vertx(vertx).build();
+                HttpClient client = new VertxAsyncHttpClientBuilder().vertx(vertx).build();
                 HttpRequest request = new HttpRequest(HttpMethod.GET,
                     new URL("http://localhost:" + ss.getLocalPort() + "/ioException"));
 
@@ -202,7 +202,7 @@ public class VertxHttpClientTests {
     @Test
     public void testConcurrentRequests() throws NoSuchAlgorithmException {
         int numRequests = 100; // 100 = 1GB of data read
-        HttpClient client = new VertxHttpClientProvider().createInstance();
+        HttpClient client = new VertxAsyncHttpClientProvider().createInstance();
         byte[] expectedDigest = digest(LONG_BODY);
         long expectedByteCount = (long) numRequests * LONG_BODY.getBytes(StandardCharsets.UTF_8).length;
 
@@ -227,7 +227,7 @@ public class VertxHttpClientTests {
 
     @Test
     public void validateHeadersReturnAsIs() {
-        HttpClient client = new VertxHttpClientProvider().createInstance();
+        HttpClient client = new VertxAsyncHttpClientProvider().createInstance();
 
         final String singleValueHeaderName = "singleValue";
         final String singleValueHeaderValue = "value";
@@ -272,7 +272,7 @@ public class VertxHttpClientTests {
     }
 
     private static HttpResponse getResponse(String path) {
-        HttpClient client = new VertxHttpClientBuilder().vertx(vertx).build();
+        HttpClient client = new VertxAsyncHttpClientBuilder().vertx(vertx).build();
         return getResponse(client, path);
     }
 
@@ -299,7 +299,7 @@ public class VertxHttpClientTests {
     }
 
     private void checkBodyReceived(String expectedBody, String path) {
-        HttpClient client = new VertxHttpClientBuilder().vertx(vertx).build();
+        HttpClient client = new VertxAsyncHttpClientBuilder().vertx(vertx).build();
         StepVerifier.create(doRequest(client, path).getBodyAsByteArray())
             .assertNext(bytes -> assertEquals(expectedBody, new String(bytes, StandardCharsets.UTF_8)))
             .verifyComplete();

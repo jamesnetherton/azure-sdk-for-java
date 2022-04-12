@@ -19,7 +19,7 @@ public class VertxHttpClientBuilderJavaDocCodeSnippets {
      */
     public void simpleInstantiation() {
         // BEGIN: com.azure.core.http.vertx.instantiation-simple
-        HttpClient client = new VertxHttpClientBuilder()
+        HttpClient client = new VertxAsyncHttpClientBuilder()
                 .build();
         // END: com.azure.core.http.vertx.instantiation-simple
     }
@@ -30,7 +30,7 @@ public class VertxHttpClientBuilderJavaDocCodeSnippets {
         final int proxyPort = 9999; // Proxy port
         ProxyOptions proxyOptions = new ProxyOptions(ProxyOptions.Type.HTTP,
                 new InetSocketAddress(proxyHost, proxyPort));
-        HttpClient client = new VertxHttpClientBuilder()
+        HttpClient client = new VertxAsyncHttpClientBuilder()
                 .proxy(proxyOptions)
                 .build();
         // END: com.azure.core.http.vertx.vertxAsyncHttpClientBuilder.proxy#ProxyOptions
@@ -48,7 +48,7 @@ public class VertxHttpClientBuilderJavaDocCodeSnippets {
         ProxyOptions proxyOptions = new ProxyOptions(ProxyOptions.Type.HTTP,
                 new InetSocketAddress(proxyHost, proxyPort));
         proxyOptions = proxyOptions.setCredentials(proxyUser, proxyPassword);
-        HttpClient client = new VertxHttpClientBuilder()
+        HttpClient client = new VertxAsyncHttpClientBuilder()
                 .proxy(proxyOptions)
                 .build();
         // END: com.azure.core.http.vertx.vertxAsyncHttpClientBuilder#setProxyAuthenticator
@@ -59,7 +59,7 @@ public class VertxHttpClientBuilderJavaDocCodeSnippets {
 
         // BEGIN: com.azure.core.http.vertx.vertxAsyncHttpClientBuilder#connextTimeout
         final Duration connextTimeout = Duration.ofSeconds(250); // connection timeout of 250 seconds
-        HttpClient client = new VertxHttpClientBuilder()
+        HttpClient client = new VertxAsyncHttpClientBuilder()
                 .connectTimeout(connextTimeout)
                 .build();
         // END: com.azure.core.http.vertx.vertxAsyncHttpClientBuilder#connextTimeout
@@ -70,7 +70,7 @@ public class VertxHttpClientBuilderJavaDocCodeSnippets {
 
         // BEGIN: com.azure.core.http.vertx.vertxAsyncHttpClientBuilder#readTimeout
         final Duration readIdleTimeout = Duration.ofSeconds(100); // read timeout of 100 seconds
-        HttpClient client = new VertxHttpClientBuilder()
+        HttpClient client = new VertxAsyncHttpClientBuilder()
                 .readIdleTimeout(readIdleTimeout)
                 .build();
         // END: com.azure.core.http.vertx.vertxAsyncHttpClientBuilder#readTimeout
