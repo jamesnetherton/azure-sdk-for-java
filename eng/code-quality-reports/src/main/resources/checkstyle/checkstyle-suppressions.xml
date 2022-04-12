@@ -176,11 +176,13 @@ the main ServiceBusClientBuilder. -->
   <!-- The constant name is public static. -->
   <suppress checks="ConstantNames" files=".*[/\\]azure[/\\]storage[/\\].*LoggingOptions.java"/>
 
-  <!-- Suppress external dependency Checkstyle on Netty and OkHttp HttpClient packages -->
+  <!-- Suppress external dependency Checkstyle on Netty, OkHttp and Vert.x HttpClient packages -->
   <suppress checks="com.azure.tools.checkstyle.checks.ExternalDependencyExposedCheck"
             files="com.azure.core.http.netty.NettyAsyncHttpClientBuilder"/>
   <suppress checks="com.azure.tools.checkstyle.checks.ExternalDependencyExposedCheck"
             files="com.azure.core.http.okhttp.OkHttpAsyncHttpClientBuilder"/>
+  <suppress checks="com.azure.tools.checkstyle.checks.ExternalDependencyExposedCheck"
+            files="com.azure.core.http.vertx.VertxAsyncHttpClientBuilder"/>
   <suppress checks="com.azure.tools.checkstyle.checks.ExternalDependencyExposedCheck"
             files="com.azure.monitor.opentelemetry.exporter.AzureMonitorTraceExporter"/>
 
