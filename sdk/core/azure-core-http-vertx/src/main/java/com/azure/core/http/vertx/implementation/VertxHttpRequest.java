@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-package com.azure.core.http.vertx;
+package com.azure.core.http.vertx.implementation;
 
 import io.vertx.core.buffer.Buffer;
 import io.vertx.ext.web.client.HttpRequest;
@@ -9,11 +9,11 @@ import io.vertx.ext.web.client.HttpRequest;
 /**
  * Holds a Vert.x {@link HttpRequest} together with a body payload.
  */
-final class VertxHttpRequest {
+public final class VertxHttpRequest {
     private final Buffer body;
     private final HttpRequest<Buffer> delegate;
 
-    VertxHttpRequest(HttpRequest<Buffer> delegate, Buffer body) {
+    public VertxHttpRequest(HttpRequest<Buffer> delegate, Buffer body) {
         this.delegate = delegate;
         this.body = body;
     }

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-package com.azure.core.http.vertx;
+package com.azure.core.http.vertx.implementation;
 
 import com.azure.core.http.HttpRequest;
 import io.vertx.core.buffer.Buffer;
@@ -23,7 +23,7 @@ class VertxHttpAsyncResponse extends VertxHttpResponseBase {
     @Override
     public Flux<ByteBuffer> getBody() {
         Buffer responseBody = getVertxHttpResponse().bodyAsBuffer();
-        if (responseBody == null || responseBody.length() == 0) {
+        if (isEmptyResponse(responseBody)) {
             return Flux.empty();
         }
         return Flux.just(responseBody.getByteBuf().nioBuffer());
@@ -33,7 +33,7 @@ class VertxHttpAsyncResponse extends VertxHttpResponseBase {
     public Mono<byte[]> getBodyAsByteArray() {
         return Mono.fromCallable(() -> {
             Buffer responseBody = getVertxHttpResponse().bodyAsBuffer();
-            if (responseBody == null || responseBody.length() == 0) {
+            if (isEmptyResponse(responseBody)) {
                 return null;
             }
             return responseBody.getBytes();

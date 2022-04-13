@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-package com.azure.core.http.vertx;
+package com.azure.core.http.vertx.implementation;
 
 import com.azure.core.http.HttpRequest;
 import io.vertx.core.AsyncResult;
@@ -13,14 +13,14 @@ import reactor.core.publisher.MonoSink;
 /**
  * {@link Handler} for Azure HTTP responses.
  */
-final class VertxHttpResponseHandler implements Handler<AsyncResult<HttpResponse<Buffer>>> {
+public final class VertxHttpResponseHandler implements Handler<AsyncResult<HttpResponse<Buffer>>> {
 
     private final HttpRequest request;
     private final MonoSink<com.azure.core.http.HttpResponse> sink;
     private final boolean eagerlyReadResponse;
 
-    VertxHttpResponseHandler(HttpRequest request, MonoSink<com.azure.core.http.HttpResponse> sink,
-            boolean eagerlyReadResponse) {
+    public VertxHttpResponseHandler(HttpRequest request, MonoSink<com.azure.core.http.HttpResponse> sink,
+                                    boolean eagerlyReadResponse) {
         this.request = request;
         this.sink = sink;
         this.eagerlyReadResponse = eagerlyReadResponse;

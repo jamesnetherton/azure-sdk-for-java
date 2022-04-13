@@ -7,6 +7,8 @@ import com.azure.core.http.HttpClient;
 import com.azure.core.http.HttpMethod;
 import com.azure.core.http.HttpRequest;
 import com.azure.core.http.HttpResponse;
+import com.azure.core.http.vertx.implementation.VertxHttpRequest;
+import com.azure.core.http.vertx.implementation.VertxHttpResponseHandler;
 import com.azure.core.util.Context;
 import com.azure.core.util.logging.ClientLogger;
 import io.vertx.core.buffer.Buffer;

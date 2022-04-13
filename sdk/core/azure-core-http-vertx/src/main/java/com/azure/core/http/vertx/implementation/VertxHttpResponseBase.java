@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-package com.azure.core.http.vertx;
+package com.azure.core.http.vertx.implementation;
 
 import com.azure.core.http.HttpHeaders;
 import com.azure.core.http.HttpRequest;
@@ -57,5 +57,9 @@ abstract class VertxHttpResponseBase extends HttpResponse {
     @Override
     public final Mono<String> getBodyAsString(Charset charset) {
         return Mono.fromCallable(() -> this.response.bodyAsString(charset.toString()));
+    }
+
+    boolean isEmptyResponse(Buffer responseBody) {
+        return responseBody == null || responseBody.length() == 0;
     }
 }
