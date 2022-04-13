@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class VertxAsyncHttpClientRestProxyTests extends RestProxyTests {
     private static WireMockServer server;
@@ -31,8 +32,8 @@ public class VertxAsyncHttpClientRestProxyTests extends RestProxyTests {
         }
         if (vertx != null) {
             CountDownLatch latch = new CountDownLatch(1);
-            vertx.close(x -> latch.countDown());
-            latch.await();
+            vertx.close(event -> latch.countDown());
+            latch.await(5, TimeUnit.SECONDS);
         }
     }
 

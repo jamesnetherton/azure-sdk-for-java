@@ -161,7 +161,6 @@ public class VertxAsyncHttpClientBuilder {
      * configuration set in the builder at the time of the build method call.
      *
      * @return A new Vert.x backed {@link HttpClient} instance.
-     * @throws IllegalStateException if a Vertx instance was not provided or resolvable via a {@link VertxProvider}
      */
     public HttpClient build() {
         if (this.vertx == null) {

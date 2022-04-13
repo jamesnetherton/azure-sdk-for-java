@@ -36,6 +36,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -81,8 +82,8 @@ public class VertxAsyncHttpClientTests {
 
         if (vertx != null) {
             CountDownLatch latch = new CountDownLatch(1);
-            vertx.close(x -> latch.countDown());
-            latch.await();
+            vertx.close(event -> latch.countDown());
+            latch.await(5, TimeUnit.SECONDS);
         }
     }
 

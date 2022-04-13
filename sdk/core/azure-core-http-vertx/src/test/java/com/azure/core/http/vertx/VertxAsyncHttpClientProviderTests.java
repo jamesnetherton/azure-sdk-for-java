@@ -3,21 +3,34 @@
 
 package com.azure.core.http.vertx;
 
+import com.azure.core.http.HttpClient;
 import com.azure.core.http.ProxyOptions;
 import com.azure.core.util.Configuration;
 import com.azure.core.util.HttpClientOptions;
+import io.vertx.core.Vertx;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.ext.web.client.impl.WebClientBase;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.time.Duration;
+import java.util.HashSet;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Tests {@link VertxAsyncHttpClientProvider}.
@@ -76,20 +89,53 @@ public class VertxAsyncHttpClientProviderTests {
 
     @Test
     public void optionsWithTimeouts() throws Exception {
-        long expectedTimeout = 15000;
-        Duration timeout = Duration.ofMillis(expectedTimeout);
+        Duration timeout = Duration.ofMillis(15000);
         HttpClientOptions clientOptions = new HttpClientOptions()
-            .setWriteTimeout(timeout)
-            .setResponseTimeout(timeout)
-            .setReadTimeout(timeout);
+            .setConnectTimeout(timeout)
+            .setConnectionIdleTimeout(timeout)
+            .setReadTimeout(timeout)
+            .setWriteTimeout(timeout);
 
         VertxAsyncHttpClient httpClient = (VertxAsyncHttpClient) new VertxAsyncHttpClientProvider()
             .createInstance(clientOptions);
 
         WebClientOptions options = getWebClientOptions(httpClient.client);
 
-        assertEquals(timeout.getSeconds(), options.getWriteIdleTimeout());
+        assertEquals(timeout.toMillis(), options.getConnectTimeout());
+        assertEquals(timeout.getSeconds(), options.getIdleTimeout());
         assertEquals(timeout.getSeconds(), options.getReadIdleTimeout());
+        assertEquals(timeout.getSeconds(), options.getWriteIdleTimeout());
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    public void vertxProviderServiceLoader() throws Exception {
+        Vertx vertx = Vertx.vertx();
+
+        ServiceLoader mockServiceLoader = mock(ServiceLoader.class);
+        VertxProvider mockVertxProvider = mock(VertxProvider.class);
+
+        try (MockedStatic<ServiceLoader> serviceLoader = mockStatic(ServiceLoader.class)) {
+            Set<VertxProvider> providers = new HashSet<>();
+            providers.add(mockVertxProvider);
+
+            Class<?> providerClass = VertxProvider.class;
+            serviceLoader.when(() -> ServiceLoader.load(providerClass, providerClass.getClassLoader()))
+                .thenReturn(mockServiceLoader);
+
+            Mockito.when(mockServiceLoader.iterator()).thenReturn(providers.iterator());
+            Mockito.when(mockVertxProvider.createVertx()).thenReturn(vertx);
+
+            HttpClient httpClient = new VertxAsyncHttpClientProvider().createInstance();
+            assertNotNull(httpClient);
+
+            verify(mockServiceLoader, times(1)).iterator();
+            verify(mockVertxProvider, times(1)).createVertx();
+        } finally {
+            CountDownLatch latch = new CountDownLatch(1);
+            vertx.close(event -> latch.countDown());
+            latch.await(5, TimeUnit.SECONDS);
+        }
     }
 
     private WebClientOptions getWebClientOptions(WebClient client) throws Exception {

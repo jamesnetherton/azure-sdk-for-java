@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Disabled;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 @Disabled("Should only be run manually when a local proxy server (e.g. Fiddler) is running")
 public class VertxHttpClientRestProxyWithAsyncHttpProxyTests extends RestProxyTests {
@@ -36,8 +37,8 @@ public class VertxHttpClientRestProxyWithAsyncHttpProxyTests extends RestProxyTe
 
         if (vertx != null) {
             CountDownLatch latch = new CountDownLatch(1);
-            vertx.close(x -> latch.countDown());
-            latch.await();
+            vertx.close(event -> latch.countDown());
+            latch.await(5, TimeUnit.SECONDS);
         }
     }
 

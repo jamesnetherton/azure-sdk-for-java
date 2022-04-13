@@ -25,6 +25,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -69,8 +70,8 @@ public class VertxAsyncHttpClientBuilderTests {
 
         if (vertx != null) {
             CountDownLatch latch = new CountDownLatch(1);
-            vertx.close(x -> latch.countDown());
-            latch.await();
+            vertx.close(event -> latch.countDown());
+            latch.await(5, TimeUnit.SECONDS);
         }
     }
 
