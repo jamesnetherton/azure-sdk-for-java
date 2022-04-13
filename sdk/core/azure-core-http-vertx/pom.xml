@@ -67,7 +67,7 @@
       <version>1.28.0-beta.1</version> <!-- {x-version-update;com.azure:azure-core;current} -->
     </dependency>
 
-    <!-- This exists to satisfy -Xlint:classfile -->
+    <!-- Required to satisfy the -Xlint:classfile compiler option -->
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-codegen</artifactId>

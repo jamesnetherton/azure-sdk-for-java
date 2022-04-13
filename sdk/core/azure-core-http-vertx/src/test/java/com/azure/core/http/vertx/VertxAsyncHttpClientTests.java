@@ -126,9 +126,7 @@ public class VertxAsyncHttpClientTests {
 
     @Test
     public void testRequestBodyIsErrorShouldPropagateToResponse() {
-        // TODO: Fix this
-        // HttpClient client = new VertxAsyncHttpClientProvider().createInstance();
-        HttpClient client = new VertxAsyncHttpClientBuilder().vertx(vertx).build();
+        HttpClient client = new VertxAsyncHttpClientProvider().createInstance();
         HttpRequest request = new HttpRequest(HttpMethod.POST, url(server, "/shortPost"))
             .setHeader("Content-Length", "123")
             .setBody(Flux.error(new RuntimeException("boo")));
@@ -140,9 +138,7 @@ public class VertxAsyncHttpClientTests {
 
     @Test
     public void testRequestBodyEndsInErrorShouldPropagateToResponse() {
-        // TODO: Fix this
-        // HttpClient client = new VertxAsyncHttpClientProvider().createInstance();
-        HttpClient client = new VertxAsyncHttpClientBuilder().vertx(vertx).build();
+        HttpClient client = new VertxAsyncHttpClientProvider().createInstance();
         String contentChunk = "abcdefgh";
         int repetitions = 1000;
         HttpRequest request = new HttpRequest(HttpMethod.POST, url(server, "/shortPost"))

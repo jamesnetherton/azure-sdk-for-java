@@ -31,7 +31,7 @@ The following sections provide several code snippets covering some of the most c
 
 ### Create a Simple Client
 
-Create an OkHttp client using a connection timeout of 60 seconds and a read timeout of 120 seconds.
+Create an Vert.x client using a connection timeout of 60 seconds and a read timeout of 120 seconds.
 
 ```java readme-sample-createBasicClient
 HttpClient client = new VertxAsyncHttpClientBuilder().build();

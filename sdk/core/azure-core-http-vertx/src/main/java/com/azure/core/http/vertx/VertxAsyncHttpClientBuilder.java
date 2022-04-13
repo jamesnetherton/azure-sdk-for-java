@@ -179,7 +179,6 @@ public class VertxAsyncHttpClientBuilder {
                 }
             } else {
                 this.vertx = Vertx.vertx();
-//                throw new IllegalStateException("A Vertx instance must be supplied or be resolvable from a VertxProvider.");
             }
         }
 
@@ -251,7 +250,7 @@ public class VertxAsyncHttpClientBuilder {
         }
 
         WebClient client = WebClient.create(this.vertx, this.webClientOptions);
-        return new VertxAsyncHttpClient(client, this.webClientOptions);
+        return new VertxAsyncHttpClient(client);
     }
 
     /**

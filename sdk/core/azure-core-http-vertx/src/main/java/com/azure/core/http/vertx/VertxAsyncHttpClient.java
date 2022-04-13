@@ -11,7 +11,6 @@ import com.azure.core.util.Context;
 import com.azure.core.util.logging.ClientLogger;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.ext.web.client.WebClient;
-import io.vertx.ext.web.client.WebClientOptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -27,20 +26,17 @@ import java.util.Objects;
 public class VertxAsyncHttpClient implements HttpClient, Closeable {
 
     private static final ClientLogger LOGGER = new ClientLogger(VertxAsyncHttpClient.class);
-    private final WebClient client;
-    private final WebClientOptions options;
+    final WebClient client;
 
     /**
      * Constructs a {@link VertxAsyncHttpClient}.
      *
      * @param client The Vert.x {@link WebClient}
-     * @param options {@link WebClientOptions}
      */
-    public VertxAsyncHttpClient(WebClient client, WebClientOptions options) {
+    public VertxAsyncHttpClient(WebClient client) {
         Objects.requireNonNull(client, "client cannot be null");
         Objects.requireNonNull(client, "options cannot be null");
         this.client = client;
-        this.options = options;
     }
 
     @Override
@@ -63,15 +59,6 @@ public class VertxAsyncHttpClient implements HttpClient, Closeable {
      */
     public void close() {
         this.client.close();
-    }
-
-    /**
-     * Gets the {@link WebClientOptions} associated with this {@link VertxAsyncHttpClient}.
-     *
-     * @return The provided {@link WebClientOptions}
-     */
-    public WebClientOptions getWebClientOptions() {
-        return options;
     }
 
     private Mono<VertxHttpRequest> toVertxHttpRequest(HttpRequest request) {
