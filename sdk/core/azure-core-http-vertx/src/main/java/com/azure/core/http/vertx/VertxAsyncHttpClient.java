@@ -11,8 +11,10 @@ import com.azure.core.http.vertx.implementation.VertxHttpRequest;
 import com.azure.core.http.vertx.implementation.VertxHttpResponseHandler;
 import com.azure.core.util.Context;
 import com.azure.core.util.logging.ClientLogger;
+import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.WebClientOptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -21,6 +23,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * {@link HttpClient} implementation for the Vert.x {@link WebClient}.
@@ -28,17 +32,23 @@ import java.util.Objects;
 public class VertxAsyncHttpClient implements HttpClient, Closeable {
 
     private static final ClientLogger LOGGER = new ClientLogger(VertxAsyncHttpClient.class);
-    final WebClient client;
+    private final Vertx vertx;
+    private final WebClient client;
+    private boolean managedVertx;
+    final WebClientOptions webClientOptions;
 
     /**
      * Constructs a {@link VertxAsyncHttpClient}.
      *
-     * @param client The Vert.x {@link WebClient}
+     * @param vertx The {@link Vertx}
+     * @param options The {@link WebClientOptions} to configure the {@link WebClient} with
      */
-    public VertxAsyncHttpClient(WebClient client) {
-        Objects.requireNonNull(client, "client cannot be null");
-        Objects.requireNonNull(client, "options cannot be null");
-        this.client = client;
+    public VertxAsyncHttpClient(Vertx vertx, WebClientOptions options) {
+        Objects.requireNonNull(vertx, "vertx cannot be null");
+        Objects.requireNonNull(options, "options cannot be null");
+        this.vertx = vertx;
+        this.webClientOptions = options;
+        this.client = WebClient.create(vertx, options);
     }
 
     @Override
@@ -57,10 +67,37 @@ public class VertxAsyncHttpClient implements HttpClient, Closeable {
     }
 
     /**
-     * Closes the {@link VertxAsyncHttpClient} and the underlying Vert.x {@link WebClient}.
+     * Closes the {@link VertxAsyncHttpClient}.
      */
     public void close() {
-        this.client.close();
+        if (this.client != null) {
+            this.client.close();
+        }
+
+        if (isManagedVertx() && this.vertx != null) {
+            CountDownLatch latch = new CountDownLatch(1);
+            this.vertx.close(event -> {
+                latch.countDown();
+                if (event.failed() && event.cause() != null) {
+                    LOGGER.logThrowableAsError(event.cause());
+                }
+            });
+            try {
+                if (!latch.await(10, TimeUnit.SECONDS)) {
+                    LOGGER.warning("Timeout closing Vertx");
+                }
+            } catch (InterruptedException e) {
+                LOGGER.logThrowableAsError(e);
+            }
+        }
+    }
+
+    boolean isManagedVertx() {
+        return managedVertx;
+    }
+
+    void setManagedVertx(boolean managedVertx) {
+        this.managedVertx = managedVertx;
     }
 
     private Mono<VertxHttpRequest> toVertxHttpRequest(HttpRequest request) {
@@ -72,14 +109,9 @@ public class VertxAsyncHttpClient implements HttpClient, Closeable {
                     URL url = request.getUrl();
                     if (url.getPath().isEmpty()) {
                         try {
-                            // Azure API documentation states:
-                            //
-                            // The URI must always include the forward slash (/) to separate the host name
-                            // from the path and query portions of the URI.
-                            //
                             url = new URL(url.getProtocol(), url.getHost(), url.getPort(), "/" + url.getFile());
                         } catch (MalformedURLException e) {
-                            LOGGER.logExceptionAsError(new RuntimeException(e));
+                            throw LOGGER.logExceptionAsError(new RuntimeException(e));
                         }
                     }
 

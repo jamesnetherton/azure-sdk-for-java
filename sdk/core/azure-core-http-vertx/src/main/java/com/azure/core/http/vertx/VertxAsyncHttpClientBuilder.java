@@ -18,7 +18,6 @@ import java.time.Duration;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static com.azure.core.util.Configuration.PROPERTY_AZURE_REQUEST_CONNECT_TIMEOUT;
 import static com.azure.core.util.Configuration.PROPERTY_AZURE_REQUEST_READ_TIMEOUT;
@@ -163,6 +162,7 @@ public class VertxAsyncHttpClientBuilder {
      * @return A new Vert.x backed {@link HttpClient} instance.
      */
     public HttpClient build() {
+        boolean managedVertx = false;
         if (this.vertx == null) {
             ServiceLoader<VertxProvider> vertxProviders = ServiceLoader.load(VertxProvider.class, VertxProvider.class.getClassLoader());
             Iterator<VertxProvider> iterator = vertxProviders.iterator();
@@ -178,78 +178,81 @@ public class VertxAsyncHttpClientBuilder {
                 }
             } else {
                 this.vertx = Vertx.vertx();
+                managedVertx = true;
             }
         }
 
         if (this.webClientOptions == null) {
             this.webClientOptions = new WebClientOptions();
-        }
 
-        if (this.connectTimeout != null) {
-            this.webClientOptions.setConnectTimeout((int) this.connectTimeout.toMillis());
-        } else {
-            this.webClientOptions.setConnectTimeout((int) DEFAULT_CONNECT_TIMEOUT);
-        }
+            if (this.connectTimeout != null) {
+                this.webClientOptions.setConnectTimeout((int) this.connectTimeout.toMillis());
+            } else {
+                this.webClientOptions.setConnectTimeout((int) DEFAULT_CONNECT_TIMEOUT);
+            }
 
-        if (this.readIdleTimeout != null) {
-            this.webClientOptions.setReadIdleTimeout((int) this.readIdleTimeout.getSeconds());
-        } else {
-            this.webClientOptions.setReadIdleTimeout((int) DEFAULT_READ_TIMEOUT);
-        }
+            if (this.readIdleTimeout != null) {
+                this.webClientOptions.setReadIdleTimeout((int) this.readIdleTimeout.getSeconds());
+            } else {
+                this.webClientOptions.setReadIdleTimeout((int) DEFAULT_READ_TIMEOUT);
+            }
 
-        if (this.writeIdleTimeout != null) {
-            this.webClientOptions.setWriteIdleTimeout((int) this.writeIdleTimeout.getSeconds());
-        } else {
-            this.webClientOptions.setWriteIdleTimeout((int) DEFAULT_WRITE_TIMEOUT);
-        }
+            if (this.writeIdleTimeout != null) {
+                this.webClientOptions.setWriteIdleTimeout((int) this.writeIdleTimeout.getSeconds());
+            } else {
+                this.webClientOptions.setWriteIdleTimeout((int) DEFAULT_WRITE_TIMEOUT);
+            }
 
-        this.webClientOptions.setIdleTimeout((int) this.idleTimeout.getSeconds());
+            this.webClientOptions.setIdleTimeout((int) this.idleTimeout.getSeconds());
 
-        Configuration buildConfiguration = (configuration == null)
+            Configuration buildConfiguration = (this.configuration == null)
                 ? Configuration.getGlobalConfiguration()
                 : configuration;
 
-        ProxyOptions buildProxyOptions = (this.proxyOptions == null && buildConfiguration != Configuration.NONE)
+            ProxyOptions buildProxyOptions = (this.proxyOptions == null && buildConfiguration != Configuration.NONE)
                 ? ProxyOptions.fromConfiguration(buildConfiguration, true)
                 : this.proxyOptions;
 
-        if (buildProxyOptions != null) {
-            io.vertx.core.net.ProxyOptions vertxProxyOptions = new io.vertx.core.net.ProxyOptions();
-            InetSocketAddress proxyAddress = buildProxyOptions.getAddress();
+            if (buildProxyOptions != null) {
+                io.vertx.core.net.ProxyOptions vertxProxyOptions = new io.vertx.core.net.ProxyOptions();
+                InetSocketAddress proxyAddress = buildProxyOptions.getAddress();
 
-            if (proxyAddress != null) {
-                vertxProxyOptions.setHost(proxyAddress.getHostName());
-                vertxProxyOptions.setPort(proxyAddress.getPort());
-            }
-
-            String proxyUsername = buildProxyOptions.getUsername();
-            String proxyPassword = buildProxyOptions.getPassword();
-            if (proxyUsername != null && proxyPassword != null) {
-                vertxProxyOptions.setUsername(proxyUsername);
-                vertxProxyOptions.setPassword(proxyPassword);
-            }
-
-            ProxyOptions.Type type = buildProxyOptions.getType();
-            if (type != null) {
-                try {
-                    ProxyType proxyType = ProxyType.valueOf(type.name());
-                    vertxProxyOptions.setType(proxyType);
-                } catch (IllegalArgumentException e) {
-                    LOGGER.logExceptionAsError(new RuntimeException("Unknown Vert.x proxy type: " + type.name(), e));
+                if (proxyAddress != null) {
+                    vertxProxyOptions.setHost(proxyAddress.getHostName());
+                    vertxProxyOptions.setPort(proxyAddress.getPort());
                 }
-            }
 
-            String nonProxyHosts = proxyOptions.getNonProxyHosts();
-            if (!CoreUtils.isNullOrEmpty(nonProxyHosts)) {
-                Stream.of(desanitizedNonProxyHosts(nonProxyHosts))
-                    .forEach(webClientOptions::addNonProxyHost);
-            }
+                String proxyUsername = buildProxyOptions.getUsername();
+                String proxyPassword = buildProxyOptions.getPassword();
+                if (proxyUsername != null && proxyPassword != null) {
+                    vertxProxyOptions.setUsername(proxyUsername);
+                    vertxProxyOptions.setPassword(proxyPassword);
+                }
 
-            webClientOptions.setProxyOptions(vertxProxyOptions);
+                ProxyOptions.Type type = buildProxyOptions.getType();
+                if (type != null) {
+                    try {
+                        ProxyType proxyType = ProxyType.valueOf(type.name());
+                        vertxProxyOptions.setType(proxyType);
+                    } catch (IllegalArgumentException e) {
+                        throw LOGGER.logExceptionAsError(new RuntimeException("Unknown Vert.x proxy type: " + type.name(), e));
+                    }
+                }
+
+                String nonProxyHosts = proxyOptions.getNonProxyHosts();
+                if (!CoreUtils.isNullOrEmpty(nonProxyHosts)) {
+                    for (String nonProxyHost : desanitizedNonProxyHosts(nonProxyHosts)) {
+                        this.webClientOptions.addNonProxyHost(nonProxyHost);
+                    }
+                }
+
+                this.webClientOptions.setProxyOptions(vertxProxyOptions);
+            }
         }
 
-        WebClient client = WebClient.create(this.vertx, this.webClientOptions);
-        return new VertxAsyncHttpClient(client);
+        VertxAsyncHttpClient client = new VertxAsyncHttpClient(this.vertx, this.webClientOptions);
+        client.setManagedVertx(managedVertx);
+        return client;
     }
 
     /**
