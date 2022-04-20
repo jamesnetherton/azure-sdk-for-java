@@ -18,7 +18,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 @Disabled("Should only be run manually when a local proxy server (e.g. Fiddler) is running")
-public class VertxHttpClientRestProxyWithAsyncHttpProxyTests extends RestProxyTests {
+public class VertxAsyncHttpClientRestProxyWithAsyncHttpProxyTests extends RestProxyTests {
     private static WireMockServer server;
     private static Vertx vertx;
 

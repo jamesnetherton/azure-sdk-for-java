@@ -14,7 +14,7 @@ import static com.azure.core.http.vertx.VertxAsyncHttpClientTests.RETURN_HEADERS
 /**
  * Mock response transformer used to test {@link VertxAsyncHttpClient}.
  */
-public class VertxHttpClientResponseTransformer extends ResponseTransformer {
+public class VertxAsyncHttpClientResponseTransformer extends ResponseTransformer {
     public static final String NAME = "vertx-http-client-response-transformer";
 
     @Override

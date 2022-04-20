@@ -14,7 +14,7 @@ import org.junit.jupiter.api.BeforeAll;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public class VertxHttpClientAsyncHttpClientTests extends HttpClientTests {
+public class VertxAsyncHttpClientAsyncHttpClientTests extends HttpClientTests {
     private static WireMockServer server;
     private static Vertx vertx;
 

@@ -57,7 +57,7 @@ public class VertxAsyncHttpClientTests {
     @BeforeAll
     public static void beforeAll() {
         server = new WireMockServer(WireMockConfiguration.options()
-            .extensions(new VertxHttpClientResponseTransformer())
+            .extensions(new VertxAsyncHttpClientResponseTransformer())
             .dynamicPort()
             .disableRequestJournal()
             .gzipDisabled(true));
@@ -67,7 +67,7 @@ public class VertxAsyncHttpClientTests {
         server.stubFor(get("/error").willReturn(aResponse().withBody("error").withStatus(500)));
         server.stubFor(post("/shortPost").willReturn(aResponse().withBody(SHORT_BODY)));
         server.stubFor(get(RETURN_HEADERS_AS_IS_PATH).willReturn(aResponse()
-            .withTransformers(VertxHttpClientResponseTransformer.NAME)));
+            .withTransformers(VertxAsyncHttpClientResponseTransformer.NAME)));
 
         server.start();
 
