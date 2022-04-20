@@ -224,7 +224,7 @@ public class VertxAsyncHttpClientBuilder {
 
                 String proxyUsername = buildProxyOptions.getUsername();
                 String proxyPassword = buildProxyOptions.getPassword();
-                if (proxyUsername != null && proxyPassword != null) {
+                if (!CoreUtils.isNullOrEmpty(proxyUsername) && CoreUtils.isNullOrEmpty(proxyPassword)) {
                     vertxProxyOptions.setUsername(proxyUsername);
                     vertxProxyOptions.setPassword(proxyPassword);
                 }
