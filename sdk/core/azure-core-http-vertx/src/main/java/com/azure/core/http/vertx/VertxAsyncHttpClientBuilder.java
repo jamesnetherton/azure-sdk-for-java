@@ -209,7 +209,7 @@ public class VertxAsyncHttpClientBuilder {
                 ? Configuration.getGlobalConfiguration()
                 : configuration;
 
-            ProxyOptions buildProxyOptions = (this.proxyOptions == null && buildConfiguration != Configuration.NONE)
+            ProxyOptions buildProxyOptions = (this.proxyOptions == null)
                 ? ProxyOptions.fromConfiguration(buildConfiguration, true)
                 : this.proxyOptions;
 
@@ -224,7 +224,7 @@ public class VertxAsyncHttpClientBuilder {
 
                 String proxyUsername = buildProxyOptions.getUsername();
                 String proxyPassword = buildProxyOptions.getPassword();
-                if (!CoreUtils.isNullOrEmpty(proxyUsername) && CoreUtils.isNullOrEmpty(proxyPassword)) {
+                if (!CoreUtils.isNullOrEmpty(proxyUsername) && !CoreUtils.isNullOrEmpty(proxyPassword)) {
                     vertxProxyOptions.setUsername(proxyUsername);
                     vertxProxyOptions.setPassword(proxyPassword);
                 }
@@ -239,7 +239,7 @@ public class VertxAsyncHttpClientBuilder {
                     }
                 }
 
-                String nonProxyHosts = proxyOptions.getNonProxyHosts();
+                String nonProxyHosts = buildProxyOptions.getNonProxyHosts();
                 if (!CoreUtils.isNullOrEmpty(nonProxyHosts)) {
                     for (String nonProxyHost : desanitizedNonProxyHosts(nonProxyHosts)) {
                         this.webClientOptions.addNonProxyHost(nonProxyHost);
