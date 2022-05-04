@@ -119,7 +119,7 @@ class JdkAsyncHttpClient implements HttpClient {
     }
 
     /**
-     * Create BodyPublisher from the given java.nio.ByteBuffer publisher.
+     * Create BodyPublisher from the given java.nio.ByteBuffer publisher.f
      *
      * @param bbPublisher stream of java.nio.ByteBuffer representing request content
      * @return the request BodyPublisher
